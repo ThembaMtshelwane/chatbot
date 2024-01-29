@@ -34,13 +34,38 @@ main {
 #text-display {
   border: 2px solid red;
   height: 70%;
+  overflow-y: auto;
 }
-
 
 #text-input {
   border: 2px solid blue;
   padding: 10px;
   height: 15%;
+}
+
+.user-text {
+  display: flex;
+  justify-content: end;
+  padding: 5px;
+}
+
+.bot-text {
+  display: flex;
+  padding: 5px;
+}
+
+.user-text-right,
+.bot-text-left {
+  border: 2px solid blue;
+  width: fit-content;
+  max-width: 60%;
+  padding: 10px;
+  border-radius: 10px;
+  word-wrap: break-word;
+}
+
+.bot-text-left {
+  border: 2px solid red;
 }
 
 input {
