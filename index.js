@@ -32,10 +32,37 @@ const addBotText = (message) => {
   textDisplay.appendChild(botTextContainer)
 }
 
+const greetingsKeywords = ['hello', 'hey', 'hi']
+const todayWeatherKeywords = ['today', "today's"]
+const tomorrowWeatherKeywords = ['tomorrow', "tomorrow's"]
+const temperatureKeywords = ['temperature']
+const listOfCities = ['Soweto']
+
 const generateBotResponse = (message) => {
-  if (message === 'Hello') {
-    return 'Hi, how can I help you'
+  const msg = message.toLowerCase()
+  const city = listOfCities.find((city) => city.toLowerCase() === msg)
+  const greet = greetingsKeywords.find((input) => input.includes(msg))
+  const todayWeather = todayWeatherKeywords.some((keyword) =>
+    msg.includes(keyword)
+  )
+  const tomorrowWeather = tomorrowWeatherKeywords.some((keyword) =>
+    msg.includes(keyword)
+  )
+  const temperature = temperatureKeywords.some((keyword) =>
+    msg.includes(keyword)
+  )
+
+  if (greet) {
+    return 'Hello, please enter a city so I can help you with weather information'
+  } else if (city) {
+    return `What do you want to know about ${city}? \n  The weather \n The temperature`
+  } else if (tomorrowWeather) {
+    return 'The weather tomorrow will be'
+  } else if (todayWeather) {
+    return 'The weather today is'
+  } else if (temperature) {
+    return 'The temperature is'
   } else {
-    return 'I cannot understand I cannot understand I cannot understand'
+    return "Sorry, I don't understand you"
   }
 }
