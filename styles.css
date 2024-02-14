@@ -5,58 +5,58 @@
   margin: 0;
   padding: 0;
   font-size: 16px;
+  color: rgb(223, 222, 222);
+  font-family: 'Courier New', Courier, monospace;
 }
 
 body {
   height: 100vh;
   width: 100vw;
-  border: 2px solid #ff0000;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgb(5, 3, 26);
 }
 
 main {
-  border: 2px solid black;
-  height: 70%;
-  width: 50%;
-  max-width: 350px;
+  height: 90%;
+  width: 75%;
+  max-width: 450px;
+  background-color: rgba(2, 147, 176, 0.342);
+  border-radius: 15px;
 }
 
 #heading {
-  border: 2px solid blue;
-  text-align: center;
+  background-color: rgb(152, 173, 174);
   padding: 10px;
   font-size: 1.5rem;
+  font-weight: 900;
+  color: rgb(5, 3, 26);
   height: 15%;
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #text-display {
-  border: 2px solid red;
   height: 70%;
   overflow-y: auto;
-}
-
-#text-input {
-  border: 2px solid blue;
-  padding: 10px;
-  height: 15%;
 }
 
 .user-text {
   display: flex;
   justify-content: end;
-  padding: 5px;
+  padding: 0px 15px 15px 0px;
 }
 
 .bot-text {
-  display: flex;
-  padding: 5px;
+  margin: 10px;
 }
 
 .user-text-right,
 .bot-text-left {
-  border: 2px solid blue;
+  background-color: rgba(24, 133, 180, 0.365);
   width: fit-content;
   max-width: 60%;
   padding: 10px;
@@ -65,16 +65,45 @@ main {
 }
 
 .bot-text-left {
-  border: 2px solid red;
+  background-color: rgba(24, 133, 180, 0.619);
+}
+
+form {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: rgb(152, 173, 174);
+  border-radius: 0px 0px 15px 15px;
 }
 
 input {
-  width: 80%;
+  color: rgb(5, 3, 26);
+  font-weight: bolder;
+  width: 100%;
   height: 35px;
   padding: 10px;
+  background-color: rgba(2, 147, 176, 0.342);
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+input:hover {
+  transform: scale(1.01);
 }
 
 button {
+  color: rgb(5, 3, 26);
+  font-weight: 900;
   height: 35px;
   padding: 5px;
+  background-color: rgba(2, 147, 176, 0.342);
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: rgba(2, 147, 176, 0.342);
+  transform: scale(1.1);
 }

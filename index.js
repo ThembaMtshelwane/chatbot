@@ -1,12 +1,46 @@
 const textDisplay = document.getElementById('text-display')
 const form = document.querySelector('form')
+const questionResponseMap = []
+
+// Function to read file contents asynchronously and parse it into question-response pairs
+const readFileAndParse = async () => {
+  try {
+    const response = await fetch('dialogs.txt') // Assuming dialogs.txt is in the same directory
+    if (!response.ok) {
+      throw new Error('Failed to load file. Please make sure the file exists.')
+    }
+    const text = await response.text()
+    const lines = text.split('\n')
+    lines.forEach((line) => {
+      const [question, response] = line.split('\t')
+      const cleanedQuestion = question
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .trim()
+      questionResponseMap.push({
+        question: cleanedQuestion,
+        response: response.trim(),
+      })
+    })
+  } catch (error) {
+    console.error('Error reading file:', error.message)
+  }
+}
+
+readFileAndParse()
 
 form.addEventListener('submit', (e) => {
   e.preventDefault()
-  const userInput = document.querySelector('input').value
-  addUserText(userInput)
-  addBotText(userInput)
-  document.querySelector('input').value = ''
+  const userInput = document.querySelector('input').value.trim()
+  if (userInput) {
+    addUserText(userInput)
+    addBotText(userInput)
+    document.querySelector('input').value = ''
+    document.querySelector('input').focus()
+    scrollToBottom()
+  } else {
+    console.log('Please enter a valid input.')
+  }
 })
 
 const addUserText = (message) => {
@@ -21,48 +55,69 @@ const addUserText = (message) => {
 }
 
 const addBotText = (message) => {
-  const response = generateBotResponse(message)
-  const displayBotTextElement = document.createElement('p')
-  displayBotTextElement.classList.add('bot-text-left')
-  displayBotTextElement.textContent = response
+  const msg = message.toLowerCase()
+  const response = getBotResponse(msg)
+  if (response) {
+    const displayBotTextElement = document.createElement('p')
+    displayBotTextElement.classList.add('bot-text-left')
+    displayBotTextElement.textContent = response
 
-  const botTextContainer = document.createElement('section')
-  botTextContainer.classList.add('bot-text')
-  botTextContainer.appendChild(displayBotTextElement)
-  textDisplay.appendChild(botTextContainer)
+    const botTextContainer = document.createElement('section')
+    botTextContainer.classList.add('bot-text')
+    botTextContainer.appendChild(displayBotTextElement)
+    textDisplay.appendChild(botTextContainer)
+    scrollToBottom()
+  } else {
+    console.log('No response found')
+  }
 }
 
-const greetingsKeywords = ['hello', 'hey', 'hi']
-const todayWeatherKeywords = ['today', "today's"]
-const tomorrowWeatherKeywords = ['tomorrow', "tomorrow's"]
-const temperatureKeywords = ['temperature']
-const listOfCities = ['Soweto']
+function levenshteinDistance(a, b) {
+  if (a.length === 0) return b.length
+  if (b.length === 0) return a.length
 
-const generateBotResponse = (message) => {
-  const msg = message.toLowerCase()
-  const city = listOfCities.find((city) => city.toLowerCase() === msg)
-  const greet = greetingsKeywords.find((input) => input.includes(msg))
-  const todayWeather = todayWeatherKeywords.some((keyword) =>
-    msg.includes(keyword)
-  )
-  const tomorrowWeather = tomorrowWeatherKeywords.some((keyword) =>
-    msg.includes(keyword)
-  )
-  const temperature = temperatureKeywords.some((keyword) =>
-    msg.includes(keyword)
-  )
+  const matrix = []
 
-  if (greet) {
-    return 'Hello, please enter a city so I can help you with weather information'
-  } else if (city) {
-    return `What do you want to know about ${city}? \n  The weather \n The temperature`
-  } else if (tomorrowWeather) {
-    return 'The weather tomorrow will be'
-  } else if (todayWeather) {
-    return 'The weather today is'
-  } else if (temperature) {
-    return 'The temperature is'
-  } else {
-    return "Sorry, I don't understand you"
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i]
   }
+
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j
+  }
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1]
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        )
+      }
+    }
+  }
+
+  return matrix[b.length][a.length]
+}
+
+function getBotResponse(userInput) {
+  let minDistance = Infinity
+  let mostSimilarResponse = ''
+
+  questionResponseMap.forEach((line) => {
+    const distance = levenshteinDistance(userInput, line.question.toLowerCase())
+    if (distance < minDistance) {
+      minDistance = distance
+      mostSimilarResponse = line.response
+    }
+  })
+
+  return mostSimilarResponse
+}
+
+function scrollToBottom() {
+  textDisplay.scrollTop = textDisplay.scrollHeight
 }
